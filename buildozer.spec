@@ -5,7 +5,7 @@ package.domain = org.akif
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
-requirements = python3,kivy==2.2.1
+requirements = python3,kivy
 android.api = 31
 android.arch = arm64-v8a
 
