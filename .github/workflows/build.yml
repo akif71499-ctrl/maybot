@@ -20,7 +20,7 @@ jobs:
         run: |
           pip install buildozer cython==0.29.33
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev cmake
+          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev cmake libltdl-dev
 
       - name: Собрать APK
         run: |
