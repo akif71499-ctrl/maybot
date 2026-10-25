@@ -18,7 +18,7 @@ from kivy.metrics import dp, sp
 from kivy.core.window import Window
 Window.clearcolor = (0.09, 0.55, 0.87, 1)
 Window.softinput_mode = "below_target"
-OPENAI_API_KEY = "СЮДА_НОВЫЙ_КЛЮЧ"
+OPENAI_API_KEY = "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"
 SYSTEM_PROMPT = (
     "Ты — дерзкий, остроумный и саркастичный собеседник. "
     "Никакой вежливости: не извиняешься, не говоришь 'конечно' и 'рад помочь'. "
