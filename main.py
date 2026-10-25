@@ -1,7 +1,5 @@
 import os
 import re
-import asyncio
-import edge_tts
 import threading
 import requests
 from gtts import gTTS
@@ -20,7 +18,7 @@ from kivy.metrics import dp, sp
 from kivy.core.window import Window
 Window.clearcolor = (0.09, 0.55, 0.87, 1)
 Window.softinput_mode = "below_target"
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = "СЮДА_НОВЫЙ_КЛЮЧ"
 SYSTEM_PROMPT = (
     "Ты — дерзкий, остроумный и саркастичный собеседник. "
     "Никакой вежливости: не извиняешься, не говоришь 'конечно' и 'рад помочь'. "
@@ -40,12 +38,21 @@ def needs_search(text):
 
 def search_web(query):
     try:
-        try:
-            from ddgs import DDGS
-        except ImportError:
-            from duckduckgo_search import DDGS
-        res = DDGS().text(query, max_results=4)
-        return "\n".join(r["title"] + ": " + r["body"] for r in res)
+        r = requests.get(
+            "https://lite.duckduckgo.com/lite/",
+            params={"q": query},
+            headers={"User-Agent": "Mozilla/5.0"},
+            timeout=15,
+        )
+        r.raise_for_status()
+        titles = re.findall(r'<a[^>]*class="result-link"[^>]*>(.*?)</a>', r.text)
+        snippets = re.findall(r'class="result-snippet">(.*?)</td>', r.text)
+        out = []
+        for i in range(min(4, len(titles))):
+            title = re.sub(r"<.*?>", "", titles[i])
+            body = re.sub(r"<.*?>", "", snippets[i]) if i < len(snippets) else ""
+            out.append(title + ": " + body)
+        return "\n".join(out)
     except Exception as e:
         print("Поиск не сработал:", e)
         return ""
@@ -62,26 +69,23 @@ def ask_gpt(messages):
     return "Нейросеть ответила ошибкой: " + str(answer)
 
 
-VOICE = "ru-RU-DmitryNeural"
-
 def clean_for_voice(text):
     return re.sub(r"[#*_`()>~|]", " ", text).strip()
+
 
 def make_voice(text):
     path = os.path.abspath("reply.mp3")
     try:
-        async def gen():
-            tts = edge_tts.Communicate(text, VOICE, rate="+35%")
-            await tts.save(path)
-        asyncio.run(gen())
-    except Exception as e:
-        print("Edge-TTS не сработал, включаю робота:", e)
-        from gtts import gTTS
         gTTS(text=clean_for_voice(text), lang="ru").save(path)
+    except Exception as e:
+        print("Озвучка не удалась:", e)
+        return None
     return path
 
 
 def play_voice(path):
+    if not path:
+        return
     try:
         from jnius import autoclass
         MediaPlayer = autoclass("android.media.MediaPlayer")
@@ -223,3 +227,4 @@ class ChatApp(App):
 
 
 ChatApp().run()
+
