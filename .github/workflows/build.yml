@@ -1,33 +1,32 @@
 name: Build APK
-
-on:
-  workflow_dispatch:
-  push:
-
+on: [push, workflow_dispatch]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - name: Скачать код
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Установить Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Установить зависимости
+      - name: Install dependencies
         run: |
-          pip install buildozer cython==0.29.33
           sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev cmake libltdl-dev
+          sudo apt-get install -y zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev cmake libffi-dev libssl-dev libltdl-dev
+          pip install git+https://github.com/kivy/buildozer legacy-cgi setuptools cython==0.29.34
 
-      - name: Собрать APK
-        run: |
-          yes | buildozer android debug
+      - name: Build APK
+        run: buildozer -v android debug
 
-      - name: Сохранить APK
+      - uses: actions/upload-artifact@v4
+        with:
+          name: maybot-apk
+          path: bin/*.apk
+
+      - name: Upload logs on failure
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: mybot-apk
-          path: bin/*.apk
+          name: build-logs
+          path: .buildozer/android/platform/python-for-android/build.log
