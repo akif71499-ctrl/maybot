@@ -1,13 +1,22 @@
 [app]
-title = MayBot
+title = Maybot
 package.name = maybot
-package.domain = org.akif
+package.domain = org.akif.maybot
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
+source.include_exts = py
 version = 1.0
-requirements = python3,kivy
-android.api = 31
-android.arch = arm64-v8a
+requirements = python3,kivy,requests,edge-tts,gtts,pyjnius
+orientation = portrait
+fullscreen = 0
+
+android.api = 34
+android.minapi = 24
+android.ndk_api = 24
+android.ndk = 26b
+android.archs = arm64-v8a
+android.accept_sdk_license = True
+android.allow_backup = True
+android.permissions = INTERNET,ACCESS_NETWORK_STATE
 
 [buildozer]
 log_level = 2
