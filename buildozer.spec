@@ -5,14 +5,13 @@ package.domain = org.akif.maybot
 source.dir = .
 source.include_exts = py
 version = 1.0
-requirements = python3,kivy,requests,edge-tts,gtts,pyjnius
+requirements = python3,kivy,requests,gtts,pyjnius
 orientation = portrait
 fullscreen = 0
 
 android.api = 34
 android.minapi = 24
 android.ndk_api = 24
-android.ndk = 26b
 android.archs = arm64-v8a
 android.accept_sdk_license = True
 android.allow_backup = True
